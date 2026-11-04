@@ -1,752 +1,240 @@
 'use client'
 
-import React, { useState } from 'react'
-import Link from 'next/link'
-import {
-  Sparkles,
-  LayoutDashboard,
-  Layers,
-  Palette,
-  Trophy,
-  History,
-  Users,
-  CreditCard,
-  FileText,
-  Cpu,
-  Bell,
-  Search,
-  ExternalLink,
-  ChevronRight,
-  ShieldCheck,
-  CheckCircle2,
-  AlertCircle,
-  Copy,
-  Zap,
-  ArrowRight,
-  Plus,
-  RefreshCw,
-  LogOut,
-  Sliders,
-  Database
-} from 'lucide-react'
+import React, { useEffect } from 'react'
 
-// Mock initial templates
-const INITIAL_TEMPLATES = [
-  {
-    id: 1,
-    title: '小红书情绪共鸣爆款标题',
-    category: '爆款标题',
-    description: '精准抓住读者焦虑与痛点，高点击率与互动率模型',
-    cost: 1,
-    heat: '9.8k',
-    cover: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=600&q=80',
-    tags: ['高点击', '情绪价值', '自媒体必备']
-  },
-  {
-    id: 2,
-    title: '极简干货科普卡片排版',
-    category: '知识科普',
-    description: '3段式论证结构，清晰视觉层级，涨粉极快',
-    cost: 2,
-    heat: '8.4k',
-    cover: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&w=600&q=80',
-    tags: ['结构清晰', '知识博主', '干货图文']
-  },
-  {
-    id: 3,
-    title: '治愈系手绘卡通头像与配图',
-    category: '卡通工坊',
-    description: '打造温暖有辨识度的自媒体拟人 IP',
-    cost: 5,
-    heat: '12.4k',
-    cover: 'https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?auto=format&fit=crop&w=600&q=80',
-    tags: ['视觉IP', '治愈画风', '高辨识度']
-  },
-  {
-    id: 4,
-    title: '3秒抓人种草脚本大纲',
-    category: '自由创作',
-    description: '黄金前3秒切入痛点，搭配分镜与引导下单金句',
-    cost: 2,
-    heat: '7.2k',
-    cover: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=600&q=80',
-    tags: ['爆款脚本', '转化率', '电商好物']
-  }
-]
+const RAW_HTML = "\n    <section class=\"login-screen is-hidden\" id=\"loginScreen\" aria-labelledby=\"loginTitle\"><canvas class=\"lg-px\"></canvas>\n      <div class=\"login-backdrop-mark\" aria-hidden=\"true\">\n        <span>\u7075</span>\n      </div>\n      <header class=\"login-site-header\">\n        <div class=\"login-brand\" aria-label=\"\u7075\u51cc\u540c\u5b66\">\n          <span class=\"login-logo\" aria-hidden=\"true\">\u7075</span>\n          <span class=\"login-brand-copy\">\n            <strong>\u7075\u51cc\u540c\u5b66</strong>\n            <small>\u81ea\u5a92\u4f53\u521b\u4f5c\u52a9\u624b</small>\n          </span>\n        </div>\n        <a class=\"ef-browse\" href=\"javascript:void(0)\">\u5148\u901b\u901b <span aria-hidden=\"true\">\u2192</span></a>\n      </header>\n\n      <div class=\"login-layout\">\n        <section class=\"login-intro\" aria-label=\"\u4ea7\u54c1\u4ecb\u7ecd\">\n          <p class=\"login-kicker\">AI \u81ea\u5a92\u4f53\u751f\u4ea7\u7ebf</p>\n          <h1>\u8ba9\u81ea\u5a92\u4f53\u53d8\u5f97<br><span>\u65e0\u9650\u7b80\u5355</span></h1>\n          <p class=\"login-intro-copy\">\u4f60\u62ff\u5230\u624b\u5c31\u5f00\u5e72\uff0c\u4e0d\u7528\u81ea\u5df1\u4ece\u5934\u6478\u7d22\u3002</p>\n          <ul class=\"login-benefits\">\n            <li><span class=\"login-check\" aria-hidden=\"true\">\u2713</span><span>\u73b0\u6210\u8d26\u53f7\u6a21\u677f\uff0c\u4eca\u5929\u5c31\u80fd\u5f00\u59cb</span></li>\n            <li><span class=\"login-check\" aria-hidden=\"true\">\u2713</span><span>\u63d0\u793a\u8bcd\u6848\u4f8b + \u6559\u7a0b\uff0c\u505a\u51fa\u66f4\u591a\u7206\u6b3e\u56fe\u7247</span></li>\n            <li><span class=\"login-check\" aria-hidden=\"true\">\u2713</span><span>AI \u5de5\u4f5c\u53f0\u642d\u5efa\u65b9\u6cd5\uff0c\u6279\u91cf\u751f\u4ea7</span></li>\n            <li><span class=\"login-check\" aria-hidden=\"true\">\u2713</span><span>\u66dd\u5149\u6da8\u7c89\uff0c\u8f7b\u677e get</span></li>\n            <li><span class=\"login-check\" aria-hidden=\"true\">\u2713</span><span>\u505a\u51fa\u81ea\u5df1\u7684\u4ea7\u54c1\uff0c\u8ba9 AI \u5e2e\u4f60\u53d8\u73b0</span></li>\n          </ul>\n        </section>\n\n        <div class=\"login-panel\">\n          <button class=\"guest-auth-close is-hidden\" id=\"guestAuthClose\" type=\"button\" aria-label=\"\u5173\u95ed\u767b\u5f55\u7a97\u53e3\" title=\"\u5173\u95ed\u767b\u5f55\u7a97\u53e3\">\u00d7</button>\n          <div class=\"auth-mode-switch\" id=\"authModeSwitch\" role=\"tablist\" aria-label=\"\u8d26\u53f7\u64cd\u4f5c\" data-visible-modes=\"2\">\n            <button class=\"is-active\" id=\"showLoginBtn\" type=\"button\" role=\"tab\" aria-selected=\"true\" data-auth-mode=\"login\">\u767b\u5f55</button>\n            <button class=\"\" id=\"showPhoneRegistrationBtn\" type=\"button\" role=\"tab\" aria-selected=\"false\" data-auth-mode=\"phone\">\u6ce8\u518c</button>\n          </div>\n          <p class=\"login-support\" id=\"authRegistrationStatus\" role=\"status\" hidden=\"\">\u6ce8\u518c\u6682\u672a\u5f00\u653e\uff0c\u5df2\u6709\u8d26\u53f7\u53ef\u76f4\u63a5\u767b\u5f55\uff0c\u6216\u8fd4\u56de\u7ee7\u7eed\u6d4f\u89c8\u3002</p>\n          <a class=\"auth-browse-return\" id=\"authBrowseReturn\" href=\"javascript:void(0)\">\u8fd4\u56de\u7ee7\u7eed\u6d4f\u89c8</a>\n          <form class=\"auth-form\" id=\"loginForm\" data-auth-form=\"login\">\n            <div class=\"login-panel-heading\">\n              <span class=\"login-panel-icon\" aria-hidden=\"true\">\n                <svg viewBox=\"0 0 24 24\">\n                  <path d=\"M12 14a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm-8 6c1.8-3.3 4.4-5 8-5s6.2 1.7 8 5\"></path>\n                </svg>\n              </span>\n              <div>\n                <h2 id=\"loginTitle\">\u6b22\u8fce\u56de\u6765</h2>\n                <p>\u767b\u5f55\u540e\u7ee7\u7eed\u4f60\u7684\u521b\u4f5c\u4e4b\u65c5</p>\n              </div>\n            </div>\n            <label>\n              <span>\u8d26\u53f7</span>\n              <input id=\"loginIdentifier\" type=\"text\" autocomplete=\"username\" placeholder=\"\u8bf7\u8f93\u5165\u8d26\u53f7\" value=\"\u68b5\u6211\u4e00\u5982\">\n            </label>\n            <label>\n              <span>\u5bc6\u7801</span>\n              <input id=\"loginPassword\" type=\"password\" autocomplete=\"current-password\" placeholder=\"\u8f93\u5165\u5bc6\u7801\" value=\"12345678\">\n            </label>\n            <button class=\"primary-button login-submit\" type=\"submit\">\n              <span>\u767b\u5f55</span>\n              <span aria-hidden=\"true\">\u2192</span>\n            </button>\n            <div class=\"login-error\" id=\"loginError\" role=\"alert\" aria-live=\"polite\"></div>\n            <p class=\"login-support\">\u9047\u5230\u8d26\u53f7\u95ee\u9898\uff0c\u8bf7\u8054\u7cfb\u7ba1\u7406\u5458</p>\n          </form>\n        </div>\n      </div>\n      <footer class=\"site-filing-footer\">\n        <a href=\"https://beian.miit.gov.cn/\" target=\"_blank\" rel=\"noopener noreferrer\">\u6d59ICP\u59072026010294\u53f7-1</a>\n      </footer>\n    </section>\n\n    <div class=\"app-shell\">\n      <aside class=\"sidebar\" id=\"adminSidebar\" aria-label=\"\u4e3b\u5bfc\u822a\" style=\"display: none;\">\n        <div class=\"brand-block\">\n          <div class=\"brand-mark\">CF</div>\n          <div class=\"brand-copy\">\n            <div class=\"brand-name\">\u5185\u5bb9\u5de5\u5382</div>\n            <div class=\"brand-subtitle\" id=\"roleSubtitle\">\u7528\u6237\u751f\u6210\u9875</div>\n          </div>\n          <button class=\"sidebar-toggle\" id=\"sidebarToggle\" type=\"button\" title=\"\u6536\u8d77\u83dc\u5355\" aria-label=\"\u6536\u8d77\u83dc\u5355\" data-ui-icon-only=\"true\" data-ui-enhanced=\"true\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"ui-action-icon lucide lucide-panel-left-close\" aria-hidden=\"true\" data-ui-icon=\"panel-left-close\"><rect width=\"18\" height=\"18\" x=\"3\" y=\"3\" rx=\"2\"></rect><path d=\"M9 3v18\"></path><path d=\"m16 15-3-3 3-3\"></path></svg></button>\n        </div>\n        <nav class=\"nav-list\" aria-label=\"\u540e\u53f0\u529f\u80fd\">\n          <section class=\"nav-group \" data-nav-group=\"content\" aria-label=\"\u5185\u5bb9\u914d\u7f6e\">\n              <button class=\"nav-item \" data-view=\"overview\" data-short=\"\u4ea7\" data-ui-enhanced=\"true\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"ui-action-icon lucide lucide-boxes\" aria-hidden=\"true\" data-ui-icon=\"boxes\"><path d=\"M2.97 12.92A2 2 0 0 0 2 14.63v3.24a2 2 0 0 0 .97 1.71l3 1.8a2 2 0 0 0 2.06 0L12 19v-5.5l-5-3-4.03 2.42Z\"></path><path d=\"m7 16.5-4.74-2.85\"></path><path d=\"m7 16.5 5-3\"></path><path d=\"M7 16.5v5.17\"></path><path d=\"M12 13.5V19l3.97 2.38a2 2 0 0 0 2.06 0l3-1.8a2 2 0 0 0 .97-1.71v-3.24a2 2 0 0 0-.97-1.71L17 10.5l-5 3Z\"></path><path d=\"m17 16.5-5-3\"></path><path d=\"m17 16.5 4.74-2.85\"></path><path d=\"M17 16.5v5.17\"></path><path d=\"M7.97 4.42A2 2 0 0 0 7 6.13v4.37l5 3 5-3V6.13a2 2 0 0 0-.97-1.71l-3-1.8a2 2 0 0 0-2.06 0l-3 1.8Z\"></path><path d=\"M12 8 7.26 5.15\"></path><path d=\"m12 8 4.74-2.85\"></path><path d=\"M12 13.5V8\"></path></svg><span class=\"nav-label\">\u4ea7\u54c1\u7ebf</span></button>\n              <button class=\"nav-item \" data-view=\"ipWorkbench\" data-short=\"I\" data-ui-enhanced=\"true\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"ui-action-icon lucide lucide-user-round\" aria-hidden=\"true\" data-ui-icon=\"user-round\"><circle cx=\"12\" cy=\"8\" r=\"5\"></circle><path d=\"M20 21a8 8 0 0 0-16 0\"></path></svg><span class=\"nav-label\">IP \u7ba1\u7406</span></button>\n              <button class=\"nav-item \" data-view=\"templates\" data-short=\"\u6a21\" data-ui-enhanced=\"true\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"ui-action-icon lucide lucide-file-text\" aria-hidden=\"true\" data-ui-icon=\"file-text\"><path d=\"M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z\"></path><path d=\"M14 2v5a1 1 0 0 0 1 1h5\"></path><path d=\"M10 9H8\"></path><path d=\"M16 13H8\"></path><path d=\"M16 17H8\"></path></svg><span class=\"nav-label\">\u6a21\u677f\u5e93</span></button>\n              <button class=\"nav-item \" data-view=\"promptCases\" data-short=\"\u56fe\" data-ui-enhanced=\"true\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"ui-action-icon lucide lucide-gallery-vertical-end\" aria-hidden=\"true\" data-ui-icon=\"gallery-vertical-end\"><path d=\"M7 2h10\"></path><path d=\"M5 6h14\"></path><rect width=\"18\" height=\"12\" x=\"3\" y=\"10\" rx=\"2\"></rect></svg><span class=\"nav-label\">\u7075\u611f\u5e7f\u573a</span></button>\n              <button class=\"nav-item \" data-view=\"tasks\" data-short=\"\u4efb\" data-ui-enhanced=\"true\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"ui-action-icon lucide lucide-history\" aria-hidden=\"true\" data-ui-icon=\"history\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"></path><path d=\"M3 3v5h5\"></path><path d=\"M12 7v5l4 2\"></path></svg><span class=\"nav-label\">\u5386\u53f2\u4efb\u52a1</span></button>\n              <button class=\"nav-item \" data-view=\"users\" data-short=\"\u7528\" data-ui-enhanced=\"true\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"ui-action-icon lucide lucide-users\" aria-hidden=\"true\" data-ui-icon=\"users\"><path d=\"M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2\"></path><path d=\"M16 3.128a4 4 0 0 1 0 7.744\"></path><path d=\"M22 21v-2a4 4 0 0 0-3-3.87\"></path><circle cx=\"9\" cy=\"7\" r=\"4\"></circle></svg><span class=\"nav-label\">\u7528\u6237\u4e0e\u6743\u9650</span></button>\n              <button class=\"nav-item \" data-view=\"paymentRecords\" data-short=\"\u5206\" data-ui-enhanced=\"true\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"ui-action-icon lucide lucide-receipt-text\" aria-hidden=\"true\" data-ui-icon=\"receipt-text\"><path d=\"M13 16H8\"></path><path d=\"M14 8H8\"></path><path d=\"M16 12H8\"></path><path d=\"M4 3a1 1 0 0 1 1-1 1.3 1.3 0 0 1 .7.2l.933.6a1.3 1.3 0 0 0 1.4 0l.934-.6a1.3 1.3 0 0 1 1.4 0l.933.6a1.3 1.3 0 0 0 1.4 0l.933-.6a1.3 1.3 0 0 1 1.4 0l.934.6a1.3 1.3 0 0 0 1.4 0l.933-.6A1.3 1.3 0 0 1 19 2a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1 1.3 1.3 0 0 1-.7-.2l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.934.6a1.3 1.3 0 0 1-1.4 0l-.933-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-1.4 0l-.934-.6a1.3 1.3 0 0 0-1.4 0l-.933.6a1.3 1.3 0 0 1-.7.2 1 1 0 0 1-1-1z\"></path></svg><span class=\"nav-label\">\u79ef\u5206\u8bb0\u5f55</span></button>\n          </section>\n        </nav>\n      </aside>\n\n      <main class=\"workspace\">\n        <header class=\"topbar\">\n          <div class=\"role-gate\" id=\"roleGate\">\n            <a class=\"role-link\" href=\"javascript:void(0)\" data-role-link=\"admin\">\u7ba1\u7406\u5458\u540e\u53f0</a>\n            <a class=\"role-link is-active\" href=\"javascript:void(0)\" data-role-link=\"user\">\u7528\u6237\u751f\u6210\u9875</a>\n          </div>\n          <button class=\"icon-button mobile-sidebar-toggle\" id=\"mobileSidebarToggle\" type=\"button\" aria-label=\"\u6253\u5f00\u540e\u53f0\u5bfc\u822a\" title=\"\u6253\u5f00\u540e\u53f0\u5bfc\u822a\">\n            <span aria-hidden=\"true\">\u2630</span>\n          </button>\n          <div class=\"admin-page-introduction\">\n            <div class=\"eyebrow\" id=\"pageEyebrow\">\u7528\u6237\u7aef</div>\n            <h1 id=\"pageTitle\">\u7528\u6237\u53ea\u9700\u8981\u9009\u62e9\u73a9\u6cd5\u3001\u8f93\u5165\u6807\u9898\u5e76\u4e0b\u8f7d\u7ed3\u679c\u3002</h1>\n            <p id=\"pageSubtitle\"></p>\n          </div>\n          <div class=\"topbar-actions\">\n            <button class=\"ui-button ui-button--secondary ghost-button page-refresh-button\" id=\"pageRefreshBtn\" type=\"button\" title=\"\u91cd\u65b0\u8bfb\u53d6\u5f53\u524d\u9875\u9762\" aria-label=\"\u5237\u65b0\u9875\u9762\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"ui-action-icon lucide lucide-refresh-cw\" aria-hidden=\"true\" data-ui-icon=\"refresh-cw\"><path d=\"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8\"></path><path d=\"M21 3v5h-5\"></path><path d=\"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16\"></path><path d=\"M8 16H3v5\"></path></svg>\u5237\u65b0\u9875\u9762</button>\n            <span class=\"runtime-pill\" id=\"runtimeModePill\" style=\"background: #10b981; color: white;\">\u7cfb\u7edf\u5c31\u7eea</span>\n            <button class=\"ui-button ui-button--secondary ghost-button auth-logout\" id=\"logoutBtn\" type=\"button\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\" class=\"ui-action-icon lucide lucide-log-in\" aria-hidden=\"true\" data-ui-icon=\"log-in\"><path d=\"m10 17 5-5-5-5\"></path><path d=\"M15 12H3\"></path><path d=\"M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4\"></path></svg>\u9000\u51fa\u767b\u5f55</button>\n          </div>\n        </header>\n\n        <section class=\"view is-active\" id=\"view-userPortal\">\n          <div class=\"creator-shell\">\n            <header data-user-shell-header=\"\" data-account-state=\"ready\" class=\"user-shell-header\">\n              <div class=\"user-shell-brand-nav\">\n                <a class=\"user-shell-brand\" href=\"javascript:void(0)\" id=\"brandLogoHome\" aria-label=\"\u8fdb\u5165\u521b\u4f5c\u5de5\u4f5c\u53f0\">\n                  <span class=\"creator-global-brand-mark\" aria-hidden=\"true\">\u7075</span><strong>\u7075\u51cc\u540c\u5b66</strong><span class=\"user-shell-brand-subtitle\">\u81ea\u5a92\u4f53\u521b\u4f5c\u52a9\u624b</span>\n                </a>\n                <nav class=\"user-shell-main-nav\" aria-label=\"\u4e3b\u8981\u529f\u80fd\">\n                  <div class=\"user-shell-nav-group\" data-shell-nav-group=\"\">\n                    <button type=\"button\" id=\"navCreateTrigger\" class=\"is-active\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"></rect><path d=\"M3 9h18M9 21V9\"></path></svg>\u521b\u4f5c<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m7 10 5 5 5-5\"></path></svg></button>\n                    <div class=\"user-shell-nav-menu\" id=\"shellCreateMenu\" hidden=\"\">\n                      <a id=\"portalCreationEntry\" href=\"javascript:void(0)\" class=\"is-active\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"></rect><path d=\"M3 9h18M9 21V9\"></path></svg><span>\u5185\u5bb9\u5de5\u5382</span><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"></path></svg></a>\n                      <a id=\"portalStudioEntry\" href=\"javascript:void(0)\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m15 4 5 5L7 22l-4 1 1-4Z\"></path><path d=\"m14 5 5 5M14 2v4M20 8h4M5 13H1\"></path></svg><span>\u81ea\u7531\u521b\u4f5c</span><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"></path></svg></a>\n                      <button type=\"button\" id=\"portalPlaySettingsEntry\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 20h9\"></path><path d=\"M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z\"></path></svg><span>\u5b9a\u5236\u73a9\u6cd5</span><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"></path></svg></button>\n                    </div>\n                  </div>\n                  <a id=\"portalMarketplaceEntry\" href=\"javascript:void(0)\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z\"></path><path d=\"M3 6h18M16 10a4 4 0 0 1-8 0\"></path></svg><span>\u5546\u5e97</span></a>\n                  <div class=\"user-shell-nav-group\" data-shell-nav-group=\"\">\n                    <button type=\"button\" id=\"portalImageCommunityEntry\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m15 4 5 5L7 22l-4 1 1-4Z\"></path><path d=\"m14 5 5 5M14 2v4M20 8h4M5 13H1\"></path></svg>\u7075\u611f\u5e7f\u573a<svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m7 10 5 5 5-5\"></path></svg></button>\n                    <div class=\"user-shell-nav-menu\" id=\"shellImageCommunityMenu\" hidden=\"\">\n                      <a href=\"javascript:void(0)\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M12 20h9\"></path><path d=\"M16.5 3.5a2.12 2.12 0 0 1 3 3L8 18l-4 1 1-4Z\"></path></svg><span>\u63d0\u793a\u8bcd\u6848\u4f8b</span><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"></path></svg></a>\n                      <a href=\"javascript:void(0)\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 4h16v12H7l-3 3Z\"></path><path d=\"M8 8h8M8 12h5\"></path></svg><span>\u63d0\u793a\u8bcd\u6559\u7a0b</span><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"></path></svg></a>\n                    </div>\n                  </div>\n                  <a id=\"portalCommunityEntry\" href=\"javascript:void(0)\">\n                    <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M4 4h16v12H7l-3 3Z\"></path><path d=\"M8 8h8M8 12h5\"></path></svg><span>AI \u5de5\u4f5c\u53f0</span>\n                  </a>\n                  <a id=\"portalChallengeEntry\" href=\"javascript:void(0)\">\n                    <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"></circle><path d=\"M15.5 8.5h-5a2 2 0 1 0 0 4h3a2 2 0 1 1 0 4H8.5M12 6.5v11\"></path></svg><span>60 \u5929\u6311\u6218</span>\n                  </a>\n                </nav>\n              </div>\n\n              <div class=\"user-shell-actions\">\n                <div class=\"user-shell-account-quick-actions\" id=\"userShellQuickActions\">\n                  <div class=\"user-shell-credit-summary\" title=\"\u5f53\u524d\u53ef\u7528\u79ef\u5206\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"></circle><path d=\"M15.5 8.5h-5a2 2 0 1 0 0 4h3a2 2 0 1 1 0 4H8.5M12 6.5v11\"></path></svg><span>\u79ef\u5206</span><strong id=\"portalHeaderCredits\">53</strong></div>\n                  <button class=\"user-shell-recharge\" id=\"topRechargeBtn\" type=\"button\" aria-label=\"\u5145\u503c\u79ef\u5206\" title=\"\u5145\u503c\u79ef\u5206\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><rect x=\"2.5\" y=\"5\" width=\"19\" height=\"14\" rx=\"2\"></rect><path d=\"M2.5 10h19M7 15h4\"></path></svg><span>\u5145\u503c</span></button>\n                </div>\n                \n                <div class=\"user-shell-account\">\n                  <button class=\"user-shell-account-trigger\" id=\"portalAccountButton\" type=\"button\" aria-label=\"\u68b5\u6211\u4e00\u5982\uff0c\u6253\u5f00\u8d26\u53f7\u83dc\u5355\" title=\"\u8d26\u53f7\">\n                    <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"8\" r=\"5\"></circle><path d=\"M20 21a8 8 0 0 0-16 0\"></path></svg>\n                    <span style=\"font-size: 13px; font-weight: 600; margin: 0 4px;\">\u68b5\u6211\u4e00\u5982</span>\n                    <svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m7 10 5 5 5-5\"></path></svg>\n                  </button>\n                  <div class=\"user-shell-account-menu\" id=\"portalAccountMenu\" role=\"dialog\" aria-label=\"\u8d26\u53f7\u4fe1\u606f\" hidden=\"\">\n                    <div class=\"user-shell-account-profile\">\n                      <span class=\"user-shell-account-profile-avatar\" aria-hidden=\"true\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"8\" r=\"5\"></circle><path d=\"M20 21a8 8 0 0 0-16 0\"></path></svg></span>\n                      <span class=\"user-shell-account-profile-copy\"><strong id=\"portalAccountName\">\u68b5\u6211\u4e00\u5982</strong><small id=\"portalAccountRole\">\u4e2a\u4eba\u8d26\u53f7 (VIP)</small></span>\n                    </div>\n                    <div class=\"user-shell-account-info-list\" role=\"list\">\n                      <div class=\"user-shell-account-info-item\" role=\"listitem\">\n                        <span class=\"user-shell-account-item-icon\" aria-hidden=\"true\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9\"></circle><path d=\"M15.5 8.5h-5a2 2 0 1 0 0 4h3a2 2 0 1 1 0 4H8.5M12 6.5v11\"></path></svg></span>\n                        <span class=\"user-shell-account-item-copy\"><small>\u53ef\u7528\u79ef\u5206</small><strong id=\"portalAccountCredits\">53 \u79ef\u5206</strong></span>\n                      </div>\n                      <div class=\"user-shell-account-info-item\" role=\"listitem\">\n                        <span class=\"user-shell-account-item-icon\" aria-hidden=\"true\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M8 2v4M16 2v4M3 10h18\"></path><rect x=\"3\" y=\"4\" width=\"18\" height=\"18\" rx=\"2\"></rect><path d=\"M8 15h.01M12 15h.01M16 15h.01M8 19h.01M12 19h.01\"></path></svg></span>\n                        <span class=\"user-shell-account-item-copy\"><small>\u8d26\u53f7\u6709\u6548\u671f</small><strong id=\"portalAccountExpiry\">2026-12-05 09:54</strong></span>\n                      </div>\n                    </div>\n                    <div class=\"user-shell-account-menu-actions\">\n                      <button class=\"user-shell-account-menu-action\" id=\"menuContactAdminBtn\" type=\"button\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M20 11a8 8 0 1 1-3.2-6.4\"></path><path d=\"M20 4v7h-7\"></path><path d=\"M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01\"></path></svg><span>\u8054\u7cfb\u7ba1\u7406\u5458</span><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"></path></svg></button>\n                      <button class=\"user-shell-account-menu-action auth-logout\" id=\"portalMenuLogout\" type=\"button\"><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m10 17 5-5-5-5\"></path><path d=\"M15 12H3\"></path><path d=\"M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4\"></path></svg><span>\u9000\u51fa\u767b\u5f55</span><svg viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"m9 18 6-6-6-6\"></path></svg></button>\n                    </div>\n                  </div>\n                </div>\n              </div>\n            </header>\n\n            <div class=\"creator-layout\" id=\"portalCreationSurface\">\n              <section class=\"creator-compose\" aria-label=\"\u751f\u6210\u8868\u5355\">\n                <div class=\"creator-heading\">\n                  <h2>\u505a\u4e00\u5957\u53ef\u4ee5\u76f4\u63a5\u53d1\u7684\u5b8c\u6574\u7d20\u6750</h2>\n                </div>\n                <form id=\"portalForm\" class=\"creator-form\">\n                  <label data-guide-anchor=\"current-product\">\n                    \u9009\u62e9\u73a9\u6cd5\n                    <select id=\"portalProductSelect\" style=\"display: none;\">\n                      <option value=\"retro-color\">\u590d\u53e4\u5f69\u8272\u6e05\u5355</option>\n                      <option value=\"retro-handdrawn\">\u590d\u53e4\u624b\u7ed8\u6e05\u5355</option>\n                      <option value=\"retro-atlas\">\u590d\u53e4\u624b\u7ed8\u76d8\u70b9\u56fe\u9274</option>\n                      <option value=\"guofeng\">\u65e7\u7eb8\u6c34\u58a8\u56fd\u98ce\u56fe\u6587</option>\n                      <option value=\"handbook\">\u6e29\u67d4\u7eff\u624b\u5e10\u56fe\u6587</option>\n                    </select>\n                    <button type=\"button\" class=\"portal-play-trigger\" id=\"portalPlayTriggerBtn\" aria-label=\"\u9009\u62e9\u73a9\u6cd5\">\n                      <span id=\"currentSelectedPlayName\">\u590d\u53e4\u5f69\u8272\u6e05\u5355</span><b aria-hidden=\"true\">\u2304</b>\n                    </button>\n                  </label>\n\n                  <label id=\"portalTextInputGroup\">\n                    <span class=\"portal-input-heading\"><span id=\"portalInputLabel\">\u8f93\u5165\u9009\u9898</span></span>\n                    <div class=\"portal-input-wrap\">\n                      <textarea id=\"portalInput\" rows=\"3\" placeholder=\"\u586b\u5199\u793a\u4f8b\uff08\u4ec5\u4f9b\u53c2\u8003\uff09\uff1a\n\u7537\u751f\u70e7\u94b1\u76845\u5927\u884c\u4e3a\" style=\"min-height: 101px;\"></textarea>\n                    </div>\n                  </label>\n\n                  <section class=\"portal-input-guidance\" id=\"portalInputGuidance\">\n                    <section class=\"portal-input-guidance-rule\">\n                      <span class=\"portal-input-guidance-section-label\">\u586b\u5199\u89c4\u5219</span>\n                      <p><strong id=\"portalInputGuidanceTitle\">\u53ea\u8f93\u5165\u4e00\u4e2a\u660e\u786e\u7684\u9009\u9898\uff0c\u4e0d\u9700\u8981\u63d0\u524d\u5199\u6b63\u6587\u3002</strong></p>\n                    </section>\n                  </section>\n\n                  <div class=\"creator-submit-row\">\n                    <button type=\"button\" id=\"startGenerateBtn\" class=\"creator-primary\" style=\"background: #e11d48; color: white; display: flex; align-items: center; justify-content: center; gap: 8px;\">\n                      <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z\"></path><path d=\"M20 2v4\"></path><path d=\"M22 4h-4\"></path><circle cx=\"4\" cy=\"20\" r=\"2\"></circle></svg>\n                      <span>\u5f00\u59cb\u751f\u6210</span>\n                    </button>\n                    <button type=\"button\" class=\"ui-button ui-button--secondary secondary-button\" id=\"saveDraftBtn\">\n                      <svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z\"></path><path d=\"M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7\"></path><path d=\"M7 3v4a1 1 0 0 0 1 1h7\"></path></svg>\n                      <span>\u5b58\u5165\u8349\u7a3f\u7bb1</span>\n                    </button>\n                  </div>\n                </form>\n              </section>\n\n              <section class=\"creator-preview\" aria-label=\"\u751f\u6210\u8f85\u52a9\u4fe1\u606f\">\n                <div class=\"portal-tabs\" role=\"tablist\" aria-label=\"\u7528\u6237\u751f\u6210\u533a\">\n                  <button id=\"portal-tab-preview\" type=\"button\" role=\"tab\" class=\"\" data-portal-tab=\"preview\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m22 11-1.296-1.296a2.4 2.4 0 0 0-3.408 0L11 16\"></path><path d=\"M4 8a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2\"></path><circle cx=\"13\" cy=\"7\" r=\"1\" fill=\"currentColor\"></circle><rect x=\"8\" y=\"2\" width=\"14\" height=\"14\" rx=\"2\"></rect></svg>\u6548\u679c\u793a\u4f8b</button>\n                  <button id=\"portal-tab-drafts\" type=\"button\" role=\"tab\" class=\"\" data-portal-tab=\"drafts\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M14.364 13.634a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506l4.013-4.009a1 1 0 0 0-3.004-3.004z\"></path><path d=\"M14.487 7.858A1 1 0 0 1 14 7V2\"></path><path d=\"M20 19.645V20a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l2.516 2.516\"></path><path d=\"M8 18h1\"></path></svg>\u8349\u7a3f\u7bb1</button>\n                  <button id=\"portal-tab-current\" type=\"button\" role=\"tab\" class=\"\" data-portal-tab=\"current\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M21 12a9 9 0 1 1-6.219-8.56\"></path></svg>\u5f53\u524d\u4efb\u52a1</button>\n                  <button id=\"portal-tab-history\" type=\"button\" role=\"tab\" class=\"is-active\" data-portal-tab=\"history\"><svg xmlns=\"http://www.w3.org/2000/svg\" width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8\"></path><path d=\"M3 3v5h5\"></path><path d=\"M12 7v5l4 2\"></path></svg>\u5386\u53f2\u8bb0\u5f55</button>\n                </div>\n\n                <section class=\"portal-tab-panel\" id=\"portal-panel-preview\" role=\"tabpanel\" hidden=\"\">\n                  <aside class=\"creator-effect-reference\">\n                    <div class=\"creator-effect-reference-head\"><strong>\u6548\u679c\u793a\u4f8b</strong><span>\u5b9e\u9645\u6548\u679c\u4f1a\u6839\u636e\u4f60\u7684\u5185\u5bb9\u53d8\u5316</span></div>\n                    <div class=\"creator-sample-image\" style=\"padding: 12px; text-align: center;\">\n                      <img src=\"https://xhs.typoai.xin/static/assets/marketplace/20260812/batch-listings-v1/05-retro-color-list/detail-01-full-set-thumb.jpg\" alt=\"\u590d\u53e4\u5f69\u8272\u6e05\u5355\u6548\u679c\u793a\u4f8b\" style=\"max-width: 100%; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08);\">\n                    </div>\n                  </aside>\n                </section>\n\n                <section class=\"portal-tab-panel\" id=\"portal-panel-drafts\" role=\"tabpanel\" hidden=\"\">\n                  <div class=\"creator-preview-head\"><strong>\u8349\u7a3f\u7bb1</strong></div>\n                  <div id=\"portalDrafts\" class=\"portal-history portal-drafts\">\n                    <div class=\"draft-toolbar\">\n                      <span id=\"draftCountLabel\">\u8fd8\u6ca1\u6709\u8349\u7a3f</span>\n                    </div>\n                    <div class=\"portal-history-empty\" id=\"draftEmptyMessage\">\u53ef\u4ee5\u5148\u5199\u9009\u9898\uff0c\u70b9\u201c\u5b58\u5165\u8349\u7a3f\u7bb1\u201d\uff0c\u4e4b\u540e\u518d\u6279\u91cf\u751f\u6210\u3002</div>\n                    <div id=\"draftItemList\" style=\"display: none; padding: 12px;\"></div>\n                  </div>\n                </section>\n\n                <section class=\"portal-tab-panel\" id=\"portal-panel-current\" role=\"tabpanel\" hidden=\"\">\n                  <div class=\"creator-preview-head\"><strong>\u5f53\u524d\u4efb\u52a1</strong></div>\n                  <div id=\"portalResult\" class=\"portal-result\" style=\"padding: 16px;\">\n                    <div class=\"portal-history-empty\" id=\"currentTaskEmpty\">\u8fd8\u6ca1\u6709\u6b63\u5728\u67e5\u770b\u7684\u4efb\u52a1\u3002\u70b9\u51fb\u201c\u5f00\u59cb\u751f\u6210\u201d\u540e\uff0c\u8fd9\u91cc\u4f1a\u663e\u793a\u8fdb\u5ea6\u4e0e\u56fe\u6587\u5361\u7247\u3002</div>\n                    <div id=\"currentTaskOutput\" style=\"display: none;\"></div>\n                  </div>\n                </section>\n\n                <section class=\"portal-tab-panel is-active\" id=\"portal-panel-history\" role=\"tabpanel\">\n                  <div class=\"creator-preview-head portal-history-head\">\n                    <strong>\u6211\u7684\u5386\u53f2\u8bb0\u5f55</strong>\n                    <span class=\"portal-history-retention-note\">\u751f\u6210\u8bb0\u5f55\u548c\u56fe\u7247\u4fdd\u7559 7 \u5929\uff0c\u8bf7\u53ca\u65f6\u4e0b\u8f7d\u3002</span>\n                  </div>\n                  <div id=\"portalHistory\" class=\"portal-history portal-history-shell\">\n                    <div class=\"portal-history-frame\">\n                      <div class=\"portal-history-table\" id=\"historyTableContainer\">\n                        <div class=\"portal-history-empty\" id=\"historyEmptyState\">\u8fd8\u6ca1\u6709\u751f\u6210\u8bb0\u5f55\u3002\u8f93\u5165\u9009\u9898\u540e\u70b9\u51fb\u201c\u5f00\u59cb\u751f\u6210\u201d\u5373\u53ef\u4f53\u9a8c\u3002</div>\n                        <div id=\"historyItemList\" style=\"display: none; padding: 12px;\"></div>\n                      </div>\n                    </div>\n                  </div>\n                </section>\n              </section>\n            </div>\n\n            <!-- \u5546\u5e97\u9762\u677f -->\n            <section class=\"marketplace-surface\" id=\"portalMarketplaceSurface\" aria-labelledby=\"marketplaceTitle\" hidden=\"\">\n              <header class=\"marketplace-heading\" style=\"display: flex; justify-content: space-between; align-items: center; padding: 16px 24px;\">\n                <div class=\"marketplace-heading-copy\">\n                  <h1 id=\"marketplaceTitle\" style=\"font-size: 24px; font-weight: 800;\">\u5546\u5e97\u4e0e\u670d\u52a1\u5957\u9910</h1>\n                  <p id=\"marketplaceSubtitle\" style=\"color: #64748b; font-size: 13px; margin-top: 4px;\">\u751f\u6210\u4e00\u6574\u5957\u53ef\u53d1\u5e03\u7684\u81ea\u5a92\u4f53\u7206\u6b3e\u7d20\u6750\u3002</p>\n                </div>\n                <button type=\"button\" id=\"returnToCreateFromMarket\" class=\"ui-button ui-button--secondary secondary-button\" style=\"padding: 6px 16px; border-radius: 8px;\">\u8fd4\u56de\u521b\u4f5c\u5de5\u4f5c\u53f0</button>\n              </header>\n              <div class=\"marketplace-workspace\" style=\"padding: 24px;\">\n                <div class=\"store-tier-grid\" style=\"display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;\">\n                  <article class=\"store-tier-card\" style=\"background: white; border-radius: 16px; border: 1px solid #e2e8f0; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);\">\n                    <header class=\"store-tier-head\">\n                      <small style=\"color: #64748b; font-size: 11px; text-transform: uppercase;\">\u5feb\u901f\u8d77\u53f7\u7248</small>\n                      <h2 style=\"font-size: 20px; font-weight: 700; margin-top: 4px;\">\u8d77\u53f7\u670d\u52a1</h2>\n                      <p style=\"color: #64748b; font-size: 12px; margin-top: 4px;\">\u5c0f\u767d\u4e5f\u80fd\u5feb\u901f\u4e0a\u624b\u81ea\u5a92\u4f53\uff0c\u4e0d\u7528\u771f\u4eba\u51fa\u955c</p>\n                    </header>\n                    <ul class=\"store-tier-points\" style=\"margin: 20px 0; font-size: 13px; line-height: 2;\">\n                      <li>\u2713 \u4e13\u5c5e IP \u5f62\u8c61</li>\n                      <li>\u2713 AI \u751f\u56fe\u5de5\u5177</li>\n                      <li>\u2713 \u6635\u79f0 + \u7b80\u4ecb\u89c4\u5212</li>\n                      <li>\u2713 \u7b2c\u4e00\u7bc7\u7b14\u8bb0\u6210\u5957\u56fe\u6587</li>\n                      <li>\u2713 \u4fdd\u59c6\u7ea7\u5b9e\u64cd\u624b\u518c</li>\n                    </ul>\n                    <div class=\"store-tier-bottom\" style=\"display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 16px;\">\n                      <div class=\"store-tier-price\"><strong style=\"font-size: 24px; color: #e11d48;\">\u00a5329</strong></div>\n                      <button type=\"button\" class=\"store-primary\" style=\"background: #e11d48; color: white; padding: 8px 20px; border-radius: 8px; font-weight: 600;\" onclick=\"alert('\u5373\u5c06\u62c9\u8d77\u5fae\u4fe1\u626b\u7801\u652f\u4ed8 \u00a5329')\">\u7acb\u5373\u8d2d\u4e70</button>\n                    </div>\n                  </article>\n\n                  <article class=\"store-tier-card is-featured\" style=\"background: white; border-radius: 16px; border: 2px solid #e11d48; padding: 24px; box-shadow: 0 10px 15px -3px rgba(225,29,72,0.1); position: relative;\">\n                    <span style=\"position: absolute; top: -12px; right: 20px; background: #e11d48; color: white; font-size: 10px; font-weight: 700; padding: 2px 10px; border-radius: 999px;\">\u6700\u53d7\u6b22\u8fce</span>\n                    <header class=\"store-tier-head\">\n                      <small style=\"color: #e11d48; font-size: 11px; font-weight: 600;\">\u8d77\u53f7\u670d\u52a1 + \u521b\u4f5c\u670d\u52a1</small>\n                      <h2 style=\"font-size: 20px; font-weight: 700; margin-top: 4px;\">\u8fdb\u9636\u521b\u4f5c\u7248</h2>\n                      <p style=\"color: #64748b; font-size: 12px; margin-top: 4px;\">\u5b66\u4f1a\u81ea\u5df1\u51fa\u56fe\uff0c\u60f3\u600e\u4e48\u6539\u5c31\u600e\u4e48\u6539</p>\n                    </header>\n                    <ul class=\"store-tier-points\" style=\"margin: 20px 0; font-size: 13px; line-height: 2;\">\n                      <li>\u2713 \u8d77\u53f7\u670d\u52a1\u5168\u90e8\u5185\u5bb9</li>\n                      <li>\u2713 3000+ \u5957\u72ec\u5bb6\u7206\u6b3e\u63d0\u793a\u8bcd\u6848\u4f8b</li>\n                      <li>\u2713 \u7206\u6b3e\u53cd\u5411\u62c6\u89e3\u80fd\u529b</li>\n                      <li>\u2713 \u73b0\u6709\u73a9\u6cd5\u968f\u5fc3\u5b9a\u5236</li>\n                      <li>\u2713 60 \u5929\u6311\u6218\u6253\u5361\u9886\u79ef\u5206</li>\n                    </ul>\n                    <div class=\"store-tier-bottom\" style=\"display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 16px;\">\n                      <div class=\"store-tier-price\"><strong style=\"font-size: 24px; color: #e11d48;\">\u00a5899</strong></div>\n                      <button type=\"button\" class=\"store-primary\" style=\"background: #e11d48; color: white; padding: 8px 20px; border-radius: 8px; font-weight: 600;\" onclick=\"alert('\u5373\u5c06\u62c9\u8d77\u5fae\u4fe1\u626b\u7801\u652f\u4ed8 \u00a5899')\">\u7acb\u5373\u8d2d\u4e70</button>\n                    </div>\n                  </article>\n\n                  <article class=\"store-tier-card\" style=\"background: white; border-radius: 16px; border: 1px solid #e2e8f0; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);\">\n                    <header class=\"store-tier-head\">\n                      <small style=\"color: #64748b; font-size: 11px; text-transform: uppercase;\">\u8fdb\u9636\u521b\u4f5c\u7248 + \u4e13\u5c5e\u5de5\u4f5c\u53f0</small>\n                      <h2 style=\"font-size: 20px; font-weight: 700; margin-top: 4px;\">\u8d85\u7ea7\u4e2a\u4f53\u7248</h2>\n                      <p style=\"color: #64748b; font-size: 12px; margin-top: 4px;\">\u4e00\u4e2a\u4eba\uff0c\u9876\u4e00\u4e2a\u4e13\u4e1a\u81ea\u5a92\u4f53\u5185\u5bb9\u56e2\u961f</p>\n                    </header>\n                    <ul class=\"store-tier-points\" style=\"margin: 20px 0; font-size: 13px; line-height: 2;\">\n                      <li>\u2713 \u8fdb\u9636\u521b\u4f5c\u7248\u5168\u90e8\u5185\u5bb9</li>\n                      <li>\u2713 \u642d\u5efa\u4e13\u5c5e\u72ec\u7acb AI \u5de5\u4f5c\u53f0</li>\n                      <li>\u2713 \u865a\u62df\u670d\u52a1\u8d26\u53f7\u5546\u4e1a\u6559\u7a0b</li>\n                      <li>\u2713 1 \u5bf9 1 \u6df1\u5ea6\u7b54\u7591\u652f\u6301</li>\n                      <li>\u2713 \u5b98\u65b9\u5408\u4f19\u4eba\u6536\u76ca\u5206\u6210</li>\n                    </ul>\n                    <div class=\"store-tier-bottom\" style=\"display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 16px;\">\n                      <div class=\"store-tier-price\"><strong style=\"font-size: 24px; color: #e11d48;\">\u00a52,399</strong></div>\n                      <button type=\"button\" class=\"store-primary\" style=\"background: #e11d48; color: white; padding: 8px 20px; border-radius: 8px; font-weight: 600;\" onclick=\"alert('\u5373\u5c06\u62c9\u8d77\u5fae\u4fe1\u626b\u7801\u652f\u4ed8 \u00a52,399')\">\u7acb\u5373\u8d2d\u4e70</button>\n                    </div>\n                  </article>\n                </div>\n              </div>\n            </section>\n          </div>\n        </section>\n      </main>\n    </div>\n\n    <!-- \u73a9\u6cd5\u9009\u62e9\u5f39\u7a97 -->\n    <dialog id=\"portalPlayDialog\" class=\"portal-play-dialog\" style=\"padding: 24px; border-radius: 16px; border: 1px solid #e2e8f0; max-width: 440px; width: 90%;\">\n      <header style=\"display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;\">\n        <h2 style=\"font-size: 18px; font-weight: 700;\">\u9009\u62e9\u73a9\u6cd5</h2>\n        <button type=\"button\" id=\"closePlayDialogBtn\" style=\"font-size: 20px; border: none; background: transparent; cursor: pointer;\">\u00d7</button>\n      </header>\n      <div class=\"portal-play-list\" style=\"display: flex; flex-col; gap: 8px;\">\n        <div class=\"play-option-item\" data-val=\"retro-color\" style=\"padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;\">\n          <strong>\u590d\u53e4\u5f69\u8272\u6e05\u5355</strong><span style=\"font-size: 12px; color: #e11d48;\">\u9ed8\u8ba4</span>\n        </div>\n        <div class=\"play-option-item\" data-val=\"retro-handdrawn\" style=\"padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;\">\n          <strong>\u590d\u53e4\u624b\u7ed8\u6e05\u5355</strong><span style=\"font-size: 12px; color: #64748b;\">\u6e05\u5355\u5e72\u8d27</span>\n        </div>\n        <div class=\"play-option-item\" data-val=\"retro-atlas\" style=\"padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;\">\n          <strong>\u590d\u53e4\u624b\u7ed8\u76d8\u70b9\u56fe\u9274</strong><span style=\"font-size: 12px; color: #64748b;\">\u56fe\u9274\u5408\u8f91</span>\n        </div>\n        <div class=\"play-option-item\" data-val=\"guofeng\" style=\"padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;\">\n          <strong>\u65e7\u7eb8\u6c34\u58a8\u56fd\u98ce\u56fe\u6587</strong><span style=\"font-size: 12px; color: #64748b;\">\u6587\u5316\u7f8e\u5b66</span>\n        </div>\n        <div class=\"play-option-item\" data-val=\"handbook\" style=\"padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 10px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;\">\n          <strong>\u6e29\u67d4\u7eff\u624b\u5e10\u56fe\u6587</strong><span style=\"font-size: 12px; color: #64748b;\">\u751f\u6d3b\u65e5\u5e38</span>\n        </div>\n      </div>\n    </dialog>\n\n    <!-- \u8054\u7cfb\u7ba1\u7406\u5458\u5f39\u7a97 (\u5fae\u4fe1\u4e8c\u7ef4\u7801) -->\n    <div class=\"user-shell-contact-overlay\" id=\"contactAdminModal\" style=\"display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 9999; align-items: center; justify-content: center;\">\n      <section class=\"user-shell-contact-dialog\" style=\"background: white; border-radius: 20px; padding: 28px; max-width: 400px; width: 90%; text-align: center; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2);\">\n        <header style=\"display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;\">\n          <div>\n            <h2 style=\"font-size: 20px; font-weight: 700;\">\u8054\u7cfb\u7ba1\u7406\u5458</h2>\n            <p style=\"color: #64748b; font-size: 12px; margin-top: 2px;\">\u6dfb\u52a0\u65f6\u8bf7\u5907\u6ce8\uff1a\u7075\u51cc\u81ea\u5a92\u4f53\u52a9\u624b</p>\n          </div>\n          <button id=\"closeContactAdminBtn\" type=\"button\" style=\"font-size: 22px; border: none; background: transparent; cursor: pointer; color: #94a3b8;\">\u00d7</button>\n        </header>\n        <div class=\"user-shell-contact-body\">\n          <div style=\"background: #f8fafc; border-radius: 12px; padding: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;\">\n            <span style=\"color: #64748b; font-size: 12px;\">\u5fae\u4fe1\u53f7</span>\n            <strong style=\"color: #0f172a; font-size: 15px;\">tanzhongyuya</strong>\n            <button type=\"button\" style=\"background: #e2e8f0; border: none; border-radius: 6px; padding: 4px 10px; font-size: 12px; cursor: pointer;\" onclick=\"navigator.clipboard.writeText('tanzhongyuya'); alert('\u5df2\u590d\u5236\u5fae\u4fe1\u53f7 tanzhongyuya \u5230\u526a\u8d34\u677f\uff01');\">\u590d\u5236</button>\n          </div>\n          <figure style=\"margin: 0;\">\n            <img src=\"https://xhs.typoai.xin/static/uploads/sample-images/1786460937688-%E5%BE%AE%E4%BF%A1%E5%9B%BE%E7%89%87-20260811230838-240-5-thumb.jpg\" alt=\"\u8054\u7cfb\u7ba1\u7406\u5458\u4e8c\u7ef4\u7801\" style=\"width: 180px; height: 180px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin: 0 auto;\">\n            <figcaption style=\"color: #64748b; font-size: 12px; margin-top: 10px;\">\u5fae\u4fe1\u626b\u4e00\u626b\u6dfb\u52a0\u597d\u53cb</figcaption>\n          </figure>\n        </div>\n      </section>\n    </div>\n\n    <!-- \u53f3\u4e0b\u89d2\u60ac\u6d6e\u5c0f\u7075\u670d\u52a1\u53f0 -->\n    <aside class=\"activity-center\" style=\"position: fixed; right: 24px; bottom: 32px; z-index: 1000;\">\n      <button type=\"button\" id=\"acTriggerBtn\" style=\"background: #e11d48; color: white; border: none; border-radius: 999px; padding: 10px 18px; display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; box-shadow: 0 10px 20px rgba(225,29,72,0.3); cursor: pointer;\">\n        <span style=\"background: white; color: #e11d48; border-radius: 50%; width: 20px; height: 20px; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800;\">\u7075</span>\n        <span>\u5c0f\u7075\u670d\u52a1\u53f0</span>\n      </button>\n    </aside>\n"
 
-export default function Workbench() {
-  const [activeTab, setActiveTab] = useState<'marketplace' | 'ip' | 'cartoon' | 'challenge' | 'history' | 'admin-users' | 'admin-orders' | 'admin-models' | 'admin-templates'>('marketplace')
-  const [selectedCategory, setSelectedCategory] = useState<string>('全部')
-  
-  // User state
-  const [user, setUser] = useState({
-    isLoggedIn: true,
-    phone: '138****8888',
-    nickname: '灵凌体验官',
-    credits: 120,
-    role: 'VIP创作者'
-  })
+export default function CreationStudio() {
+  useEffect(() => {
+    
+// Interactive scripts for Lingling creation studio
+(function() {
+  let userCredits = 53;
+  let drafts = [];
+  let historyTasks = [];
 
-  // Modals
-  const [showAuthModal, setShowAuthModal] = useState(false)
-  const [showRechargeModal, setShowRechargeModal] = useState(false)
-  const [showSuccessToast, setShowSuccessToast] = useState<string | null>(null)
+  function init() {
+    console.log("Lingling Creation Studio Initialized.");
 
-  // AI Tool generator state
-  const [inputTopic, setInputTopic] = useState('')
-  const [isGenerating, setIsGenerating] = useState(false)
-  const [generatedResults, setGeneratedResults] = useState<string[]>([])
+    // 1. Play Selector
+    const playTrigger = document.getElementById('portalPlayTriggerBtn');
+    const playDialog = document.getElementById('portalPlayDialog');
+    const closePlayBtn = document.getElementById('closePlayDialogBtn');
+    const currentPlayLabel = document.getElementById('currentSelectedPlayName');
 
-  const triggerToast = (msg: string) => {
-    setShowSuccessToast(msg)
-    setTimeout(() => setShowSuccessToast(null), 3000)
-  }
-
-  const handleGenerate = () => {
-    if (!inputTopic.trim()) {
-      alert('请输入你要创作的主题或关键词！')
-      return
+    if (playTrigger && playDialog) {
+      playTrigger.addEventListener('click', () => playDialog.showModal());
     }
-    if (user.credits < 2) {
-      setShowRechargeModal(true)
-      return
+    if (closePlayBtn && playDialog) {
+      closePlayBtn.addEventListener('click', () => playDialog.close());
+    }
+    document.querySelectorAll('.play-option-item').forEach(item => {
+      item.addEventListener('click', function() {
+        const title = this.querySelector('strong').innerText;
+        if (currentPlayLabel) currentPlayLabel.innerText = title;
+        if (playDialog) playDialog.close();
+      });
+    });
+
+    // 2. Right Side Tabs (效果示例, 草稿箱, 当前任务, 历史记录)
+    const tabs = ['preview', 'drafts', 'current', 'history'];
+    tabs.forEach(tabKey => {
+      const btn = document.getElementById('portal-tab-' + tabKey);
+      const panel = document.getElementById('portal-panel-' + tabKey);
+      if (btn) {
+        btn.addEventListener('click', function() {
+          tabs.forEach(k => {
+            const b = document.getElementById('portal-tab-' + k);
+            const p = document.getElementById('portal-panel-' + k);
+            if (b) b.classList.remove('is-active');
+            if (p) {
+              p.classList.remove('is-active');
+              p.setAttribute('hidden', '');
+            }
+          });
+          btn.classList.add('is-active');
+          if (panel) {
+            panel.classList.add('is-active');
+            panel.removeAttribute('hidden');
+          }
+        });
+      }
+    });
+
+    // 3. Navigation: Create vs Shop
+    const createNav = document.getElementById('portalCreationEntry') || document.getElementById('brandLogoHome');
+    const marketNav = document.getElementById('portalMarketplaceEntry');
+    const createSurface = document.getElementById('portalCreationSurface');
+    const marketSurface = document.getElementById('portalMarketplaceSurface');
+    const backToCreateBtn = document.getElementById('returnToCreateFromMarket');
+
+    function showCreate() {
+      if (createSurface) createSurface.removeAttribute('hidden');
+      if (marketSurface) marketSurface.setAttribute('hidden', '');
+    }
+    function showMarket() {
+      if (createSurface) createSurface.setAttribute('hidden', '');
+      if (marketSurface) marketSurface.removeAttribute('hidden');
     }
 
-    setIsGenerating(true)
-    setTimeout(() => {
-      setUser(prev => ({ ...prev, credits: prev.credits - 2 }))
-      setGeneratedResults([
-        `🔥 建议收藏！教你如何用 3 招搞定「${inputTopic}」`,
-        `💡 讲真！关于「${inputTopic}」，90% 的自媒体人都做错了`,
-        `✨ 亲测有效！这套「${inputTopic}」保姆级实操复盘，看完直接抄作业`,
-        `📌 为什么聪明人都在默默做「${inputTopic}」？底层逻辑拆解给你看`,
-        `⚡️ 别再瞎忙了！一份关于「${inputTopic}」的高效实战清单（附避坑指南）`
-      ])
-      setIsGenerating(false)
-      triggerToast('生成完成，已扣除 2 积分！')
-    }, 1200)
+    if (createNav) createNav.addEventListener('click', showCreate);
+    if (backToCreateBtn) backToCreateBtn.addEventListener('click', showCreate);
+    if (marketNav) marketNav.addEventListener('click', showMarket);
+
+    // 4. Contact Admin Modal
+    const contactModal = document.getElementById('contactAdminModal');
+    const closeContactBtn = document.getElementById('closeContactAdminBtn');
+    const acTrigger = document.getElementById('acTriggerBtn');
+    const menuContactBtn = document.getElementById('menuContactAdminBtn');
+
+    function openContact() {
+      if (contactModal) contactModal.style.display = 'flex';
+    }
+    function closeContact() {
+      if (contactModal) contactModal.style.display = 'none';
+    }
+
+    if (closeContactBtn) closeContactBtn.addEventListener('click', closeContact);
+    if (acTrigger) acTrigger.addEventListener('click', openContact);
+    if (menuContactBtn) menuContactBtn.addEventListener('click', openContact);
+
+    // 5. Account Dropdown Menu
+    const accountBtn = document.getElementById('portalAccountButton');
+    const accountMenu = document.getElementById('portalAccountMenu');
+    if (accountBtn && accountMenu) {
+      accountBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const isHidden = accountMenu.hasAttribute('hidden');
+        if (isHidden) {
+          accountMenu.removeAttribute('hidden');
+        } else {
+          accountMenu.setAttribute('hidden', '');
+        }
+      });
+      document.addEventListener('click', () => {
+        if (accountMenu) accountMenu.setAttribute('hidden', '');
+      });
+    }
+
+    // 6. Start Generation Logic
+    const startGenBtn = document.getElementById('startGenerateBtn');
+    const inputArea = document.getElementById('portalInput');
+    const headerCredits = document.getElementById('portalHeaderCredits');
+    const accountCredits = document.getElementById('portalAccountCredits');
+
+    if (startGenBtn && inputArea) {
+      startGenBtn.addEventListener('click', function() {
+        const topic = inputArea.value.trim() || '男生烧钱的5大行为';
+        if (userCredits < 6) {
+          alert('积分不足，请先充值积分！');
+          return;
+        }
+
+        userCredits -= 6;
+        if (headerCredits) headerCredits.innerText = userCredits;
+        if (accountCredits) accountCredits.innerText = userCredits + ' 积分';
+
+        // Switch to 'current' task tab
+        const currentTabBtn = document.getElementById('portal-tab-current');
+        if (currentTabBtn) currentTabBtn.click();
+
+        const currentEmpty = document.getElementById('currentTaskEmpty');
+        const currentOutput = document.getElementById('currentTaskOutput');
+        if (currentEmpty) currentEmpty.style.display = 'none';
+        if (currentOutput) {
+          currentOutput.style.display = 'block';
+          currentOutput.innerHTML = `
+            <div style="background: #f8fafc; border-radius: 12px; padding: 16px; border: 1px solid #e2e8f0;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                <span style="font-weight: 700; color: #0f172a; font-size: 14px;">正在生成选题：${topic}</span>
+                <span style="color: #10b981; font-size: 12px; font-weight: 600;">已扣除 6 积分</span>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 12px;">
+                <div style="background: white; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0; text-align: center;">
+                  <strong style="color: #e11d48; font-size: 12px;">P1 痛点封面</strong>
+                  <p style="font-size: 12px; font-weight: 600; margin-top: 6px;">${topic} · 避坑保姆级指南</p>
+                </div>
+                <div style="background: white; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0; text-align: center;">
+                  <strong style="color: #e11d48; font-size: 12px;">P2 实操拆解</strong>
+                  <p style="font-size: 12px; font-weight: 600; margin-top: 6px;">核心 3 步精简复盘与止损原则</p>
+                </div>
+                <div style="background: white; border-radius: 8px; padding: 12px; border: 1px solid #e2e8f0; text-align: center;">
+                  <strong style="color: #e11d48; font-size: 12px;">P3 金句总结</strong>
+                  <p style="font-size: 12px; font-weight: 600; margin-top: 6px;">理性消费，少走弯路！评论区见</p>
+                </div>
+              </div>
+              <div style="margin-top: 16px; text-align: right;">
+                <button type="button" style="background: #0f172a; color: white; border: none; border-radius: 6px; padding: 6px 14px; font-size: 12px; cursor: pointer;" onclick="alert('已成功复制完整图文文案到剪贴板！');">一键复制文案</button>
+              </div>
+            </div>
+          `;
+        }
+
+        // Add to history list
+        historyTasks.unshift({ topic, time: '刚刚', cost: 6 });
+        const historyEmpty = document.getElementById('historyEmptyState');
+        const historyList = document.getElementById('historyItemList');
+        if (historyEmpty) historyEmpty.style.display = 'none';
+        if (historyList) {
+          historyList.style.display = 'block';
+          historyList.innerHTML = historyTasks.map(t => `
+            <div style="background: white; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="font-size: 13px; color: #0f172a;">${t.topic}</strong>
+                <div style="color: #64748b; font-size: 11px; margin-top: 2px;">成套图文 · 扣除 ${t.cost} 积分 · ${t.time}</div>
+              </div>
+              <span style="background: #ecfdf5; color: #059669; font-size: 11px; padding: 2px 8px; border-radius: 999px; font-weight: 600;">已完成</span>
+            </div>
+          `).join('');
+        }
+      });
+    }
+
+    // 7. Save Draft Logic
+    const draftBtn = document.getElementById('saveDraftBtn');
+    if (draftBtn && inputArea) {
+      draftBtn.addEventListener('click', function() {
+        const topic = inputArea.value.trim() || '未命名选题';
+        drafts.unshift(topic);
+        const draftTabBtn = document.getElementById('portal-tab-drafts');
+        if (draftTabBtn) draftTabBtn.click();
+
+        const draftEmpty = document.getElementById('draftEmptyMessage');
+        const draftList = document.getElementById('draftItemList');
+        const draftCount = document.getElementById('draftCountLabel');
+        if (draftEmpty) draftEmpty.style.display = 'none';
+        if (draftCount) draftCount.innerText = drafts.length + ' 个草稿';
+        if (draftList) {
+          draftList.style.display = 'block';
+          draftList.innerHTML = drafts.map(d => `
+            <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px 14px; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+              <span style="font-size: 13px; color: #0f172a;">${d}</span>
+              <button type="button" style="background: #e11d48; color: white; border: none; border-radius: 4px; padding: 4px 10px; font-size: 11px; cursor: pointer;" onclick="document.getElementById('portalInput').value='${d}'; document.getElementById('startGenerateBtn').click();">立即生成</button>
+            </div>
+          `).join('');
+        }
+      });
+    }
+
+    // 8. Recharge Button
+    const topRecharge = document.getElementById('topRechargeBtn');
+    if (topRecharge) {
+      topRecharge.addEventListener('click', function() {
+        showMarket();
+      });
+    }
   }
 
-  const handleRecharge = (amount: number, credits: number) => {
-    setUser(prev => ({ ...prev, credits: prev.credits + credits }))
-    setShowRechargeModal(false)
-    triggerToast(`支付成功！已充值 ${credits} 积分`)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
   }
+})();
+
+  }, [])
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-slate-50 font-sans">
-      {/* Toast Notification */}
-      {showSuccessToast && (
-        <div className="fixed top-5 right-5 z-50 flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-3 text-white shadow-xl animate-fade-in">
-          <CheckCircle2 className="h-5 w-5" />
-          <span className="text-sm font-medium">{showSuccessToast}</span>
-        </div>
-      )}
-
-      {/* Left Sidebar */}
-      <aside className="w-64 flex-shrink-0 bg-slate-900 text-slate-300 flex flex-col justify-between border-r border-slate-800">
-        <div>
-          {/* Brand Logo */}
-          <div className="h-16 flex items-center gap-3 px-6 border-b border-slate-800/80 bg-slate-950/40">
-            <div className="h-9 w-9 rounded-xl bg-gradient-to-tr from-rose-600 to-rose-400 flex items-center justify-center text-white shadow-lg shadow-rose-950/50">
-              <Sparkles className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-bold text-white tracking-wide text-base">灵凌同学</span>
-                <span className="text-[10px] bg-rose-500/20 text-rose-400 border border-rose-500/30 px-1.5 py-0.5 rounded font-mono font-medium">v2.6</span>
-              </div>
-              <p className="text-[11px] text-slate-400">让自媒体变得无限简单</p>
-            </div>
-          </div>
-
-          {/* Navigation Sections */}
-          <div className="p-3 space-y-6 overflow-y-auto max-h-[calc(100vh-140px)]">
-            {/* User Workbench Section */}
-            <div>
-              <div className="px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                创作工作台
-              </div>
-              <nav className="space-y-1">
-                <button
-                  onClick={() => setActiveTab('marketplace')}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === 'marketplace'
-                      ? 'bg-rose-500 text-white shadow-md shadow-rose-900/40'
-                      : 'hover:bg-slate-800/80 hover:text-white'
-                  }`}
-                >
-                  <Layers className="h-4 w-4" />
-                  <span>灵感广场</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('ip')}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === 'ip'
-                      ? 'bg-rose-500 text-white shadow-md shadow-rose-900/40'
-                      : 'hover:bg-slate-800/80 hover:text-white'
-                  }`}
-                >
-                  <Sparkles className="h-4 w-4" />
-                  <span>IP 创作中心</span>
-                  <span className="ml-auto text-[10px] bg-rose-950 text-rose-300 border border-rose-800 px-1.5 py-0.2 rounded">爆款</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('cartoon')}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === 'cartoon'
-                      ? 'bg-rose-500 text-white shadow-md shadow-rose-900/40'
-                      : 'hover:bg-slate-800/80 hover:text-white'
-                  }`}
-                >
-                  <Palette className="h-4 w-4" />
-                  <span>卡通工坊</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('challenge')}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === 'challenge'
-                      ? 'bg-rose-500 text-white shadow-md shadow-rose-900/40'
-                      : 'hover:bg-slate-800/80 hover:text-white'
-                  }`}
-                >
-                  <Trophy className="h-4 w-4" />
-                  <span>60 天挑战</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('history')}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === 'history'
-                      ? 'bg-rose-500 text-white shadow-md shadow-rose-900/40'
-                      : 'hover:bg-slate-800/80 hover:text-white'
-                  }`}
-                >
-                  <History className="h-4 w-4" />
-                  <span>任务与草稿箱</span>
-                </button>
-              </nav>
-            </div>
-
-            {/* Admin CMS Section */}
-            <div>
-              <div className="px-3 text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center justify-between">
-                <span>管理运营后台 (CMS)</span>
-                <span className="text-[10px] text-emerald-400 font-mono">ADMIN</span>
-              </div>
-              <nav className="space-y-1">
-                <button
-                  onClick={() => setActiveTab('admin-users')}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === 'admin-users'
-                      ? 'bg-slate-800 text-rose-400 border border-slate-700'
-                      : 'hover:bg-slate-800/80 hover:text-white text-slate-400'
-                  }`}
-                >
-                  <Users className="h-4 w-4" />
-                  <span>用户与权限管理</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('admin-orders')}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === 'admin-orders'
-                      ? 'bg-slate-800 text-rose-400 border border-slate-700'
-                      : 'hover:bg-slate-800/80 hover:text-white text-slate-400'
-                  }`}
-                >
-                  <CreditCard className="h-4 w-4" />
-                  <span>套餐与充值流水</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('admin-templates')}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === 'admin-templates'
-                      ? 'bg-slate-800 text-rose-400 border border-slate-700'
-                      : 'hover:bg-slate-800/80 hover:text-white text-slate-400'
-                  }`}
-                >
-                  <FileText className="h-4 w-4" />
-                  <span>模板与案例库配置</span>
-                </button>
-
-                <button
-                  onClick={() => setActiveTab('admin-models')}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
-                    activeTab === 'admin-models'
-                      ? 'bg-slate-800 text-rose-400 border border-slate-700'
-                      : 'hover:bg-slate-800/80 hover:text-white text-slate-400'
-                  }`}
-                >
-                  <Cpu className="h-4 w-4" />
-                  <span>AI 模型调度与通道</span>
-                </button>
-              </nav>
-            </div>
-          </div>
-        </div>
-
-        {/* Sidebar Footer */}
-        <div className="p-4 border-t border-slate-800/80 bg-slate-950/60">
-          <Link
-            href="/lingling"
-            target="_blank"
-            className="flex items-center justify-between text-xs text-slate-400 hover:text-rose-400 transition-colors py-1 mb-2"
-          >
-            <span>访问产品官网入口</span>
-            <ExternalLink className="h-3.5 w-3.5" />
-          </Link>
-          <div className="flex items-center gap-3 pt-2 border-t border-slate-800">
-            <div className="h-8 w-8 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/40 flex items-center justify-center font-bold text-xs">
-              灵
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-white truncate">{user.nickname}</p>
-              <p className="text-[11px] text-slate-400 truncate">{user.role}</p>
-            </div>
-          </div>
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden">
-        {/* Top Header */}
-        <header className="h-16 bg-white border-b border-slate-200 px-8 flex items-center justify-between flex-shrink-0 shadow-sm">
-          <div className="flex items-center gap-4">
-            <h1 className="text-lg font-bold text-slate-800">
-              {activeTab === 'marketplace' && '灵感广场与精选模板'}
-              {activeTab === 'ip' && '小红书 IP 创作中心'}
-              {activeTab === 'cartoon' && '卡通形象工坊'}
-              {activeTab === 'challenge' && '60 天自媒体跃迁挑战'}
-              {activeTab === 'history' && '生成历史与任务记录'}
-              {activeTab === 'admin-users' && '系统管理 › 用户与权限'}
-              {activeTab === 'admin-orders' && '系统管理 › 套餐订单与充值记录'}
-              {activeTab === 'admin-templates' && '系统管理 › 模板库与案例管理'}
-              {activeTab === 'admin-models' && '系统管理 › AI 模型与通道配置'}
-            </h1>
-            <div className="hidden md:flex items-center gap-1 text-xs text-slate-400 bg-slate-100 px-3 py-1.5 rounded-full">
-              <ShieldCheck className="h-3.5 w-3.5 text-emerald-500" />
-              <span>小红书官方合规词库已加载</span>
-            </div>
-          </div>
-
-          <div className="flex items-center gap-4">
-            {/* Credit Balance Badge */}
-            <div className="flex items-center gap-3 bg-rose-50 border border-rose-100 rounded-full pl-3 pr-1 py-1">
-              <div className="flex items-center gap-1.5">
-                <Zap className="h-4 w-4 text-rose-500 fill-rose-500" />
-                <span className="text-xs text-rose-900 font-semibold">{user.credits} 点</span>
-              </div>
-              <button
-                onClick={() => setShowRechargeModal(true)}
-                className="bg-rose-500 hover:bg-rose-600 text-white text-xs font-medium px-3 py-1 rounded-full transition-colors shadow-sm"
-              >
-                充值
-              </button>
-            </div>
-
-            <button
-              onClick={() => triggerToast('暂无新系统通知')}
-              className="p-2 text-slate-500 hover:text-slate-800 hover:bg-slate-100 rounded-full transition-colors relative"
-            >
-              <Bell className="h-5 w-5" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 bg-rose-500 rounded-full ring-2 ring-white" />
-            </button>
-          </div>
-        </header>
-
-        {/* Scrollable Workspace Body */}
-        <div className="flex-1 overflow-y-auto p-8">
-          {/* TAB 1: 灵感广场 */}
-          {activeTab === 'marketplace' && (
-            <div className="max-w-6xl mx-auto space-y-8">
-              {/* Banner */}
-              <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-rose-950 to-slate-900 p-8 text-white shadow-xl">
-                <div className="relative z-10 max-w-2xl">
-                  <div className="inline-flex items-center gap-2 rounded-full bg-rose-500/20 px-3 py-1 text-xs font-medium text-rose-300 border border-rose-500/30 mb-4">
-                    <Sparkles className="h-3.5 w-3.5" />
-                    2026 小红书爆款排版与文案模型
-                  </div>
-                  <h2 className="text-3xl font-black tracking-tight text-white sm:text-4xl">
-                    从灵感到爆款，只要 <span className="text-rose-400">30 秒</span>
-                  </h2>
-                  <p className="mt-3 text-sm text-slate-300 leading-relaxed">
-                    精选千赞爆款模板，涵盖标题情绪价值激发、干货科普知识卡片、IP 拟人插画与种草脚本，一键生成。
-                  </p>
-                  <div className="mt-6 flex items-center gap-3">
-                    <button
-                      onClick={() => setActiveTab('ip')}
-                      className="bg-rose-500 hover:bg-rose-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-lg shadow-rose-900/50 flex items-center gap-2 transition-all hover:scale-105"
-                    >
-                      <span>立即开始创作</span>
-                      <ArrowRight className="h-4 w-4" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Category Filter */}
-              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-                <div className="flex items-center gap-2">
-                  {['全部', '爆款标题', '知识科普', '卡通工坊', '自由创作'].map(cat => (
-                    <button
-                      key={cat}
-                      onClick={() => setSelectedCategory(cat)}
-                      className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${
-                        selectedCategory === cat
-                          ? 'bg-slate-900 text-white shadow-sm'
-                          : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50'
-                      }`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-                <div className="text-xs text-slate-500">
-                  共展示 {INITIAL_TEMPLATES.length} 款自媒体模版
-                </div>
-              </div>
-
-              {/* Template Cards Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {INITIAL_TEMPLATES.filter(
-                  t => selectedCategory === '全部' || t.category === selectedCategory
-                ).map(t => (
-                  <div
-                    key={t.id}
-                    className="group bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col"
-                  >
-                    <div className="relative h-44 overflow-hidden bg-slate-100">
-                      <img
-                        src={t.cover}
-                        alt={t.title}
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                      />
-                      <div className="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-semibold px-2.5 py-1 rounded-full">
-                        {t.category}
-                      </div>
-                      <div className="absolute top-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1 shadow">
-                        <Zap className="h-3 w-3 fill-white" />
-                        {t.cost} 积分
-                      </div>
-                    </div>
-
-                    <div className="p-5 flex-1 flex flex-col justify-between">
-                      <div>
-                        <h3 className="font-bold text-slate-900 text-base group-hover:text-rose-600 transition-colors">
-                          {t.title}
-                        </h3>
-                        <p className="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">
-                          {t.description}
-                        </p>
-                      </div>
-
-                      <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
-                        <div className="flex flex-wrap gap-1">
-                          {t.tags.map(tag => (
-                            <span key={tag} className="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded">
-                              #{tag}
-                            </span>
-                          ))}
-                        </div>
-                        <button
-                          onClick={() => {
-                            setActiveTab('ip')
-                            setInputTopic(t.title)
-                          }}
-                          className="bg-rose-50 hover:bg-rose-500 text-rose-600 hover:text-white text-xs font-semibold px-3 py-1.5 rounded-lg transition-colors"
-                        >
-                          使用
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* TAB 2: IP 创作中心 */}
-          {activeTab === 'ip' && (
-            <div className="max-w-4xl mx-auto space-y-6">
-              <div className="bg-white rounded-2xl border border-slate-200 p-8 shadow-sm">
-                <div className="flex items-center gap-3 mb-6">
-                  <div className="h-10 w-10 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center">
-                    <Sparkles className="h-5 w-5" />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-bold text-slate-900">爆款标题与小红书图文内容生成器</h2>
-                    <p className="text-xs text-slate-500 mt-0.5">每次消耗 2 积分，支持情绪共鸣、干货结构与爆款词重构</p>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-2">
-                      你的创作主题 / 核心痛点 / 产品关键词
-                    </label>
-                    <textarea
-                      value={inputTopic}
-                      onChange={e => setInputTopic(e.target.value)}
-                      placeholder="例如：自媒体新手如何起号、美白抗老护肤避坑、极简桌面改造好物..."
-                      rows={3}
-                      className="w-full rounded-xl border border-slate-300 p-4 text-sm text-slate-800 placeholder-slate-400 focus:border-rose-500 focus:ring-2 focus:ring-rose-500/20 outline-none transition"
-                    />
-                  </div>
-
-                  <div className="flex items-center justify-between pt-2">
-                    <div className="flex items-center gap-2">
-                      <span className="text-xs text-slate-500">快速示例：</span>
-                      {['新手自媒体起号', '早C晚A实操', '平价好物合辑'].map(sample => (
-                        <button
-                          key={sample}
-                          onClick={() => setInputTopic(sample)}
-                          className="text-xs text-slate-600 hover:text-rose-600 bg-slate-100 hover:bg-rose-50 px-2.5 py-1 rounded-md transition"
-                        >
-                          {sample}
-                        </button>
-                      ))}
-                    </div>
-
-                    <button
-                      onClick={handleGenerate}
-                      disabled={isGenerating}
-                      className="bg-rose-500 hover:bg-rose-600 disabled:opacity-50 text-white font-semibold text-sm px-6 py-2.5 rounded-xl shadow-lg shadow-rose-900/30 flex items-center gap-2 transition"
-                    >
-                      {isGenerating ? (
-                        <>
-                          <RefreshCw className="h-4 w-4 animate-spin" />
-                          <span>AI 正在思考生成中...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Sparkles className="h-4 w-4" />
-                          <span>一键智能生成 (扣 2 点)</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* Generation Output Panel */}
-              {generatedResults.length > 0 && (
-                <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
-                  <div className="flex items-center justify-between border-b border-slate-100 pb-3">
-                    <h3 className="font-bold text-slate-800 text-sm flex items-center gap-2">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                      已为你生成 5 个高点击小红书标题
-                    </h3>
-                    <span className="text-xs text-slate-400">点击任意一条即可复制</span>
-                  </div>
-
-                  <div className="space-y-2">
-                    {generatedResults.map((res, i) => (
-                      <div
-                        key={i}
-                        onClick={() => {
-                          navigator.clipboard?.writeText(res)
-                          triggerToast('已成功复制标题到剪贴板！')
-                        }}
-                        className="group flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-slate-50/50 hover:bg-rose-50/50 hover:border-rose-200 cursor-pointer transition"
-                      >
-                        <span className="text-sm font-medium text-slate-800 group-hover:text-rose-700">
-                          {res}
-                        </span>
-                        <Copy className="h-4 w-4 text-slate-400 group-hover:text-rose-500 transition" />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* TAB 3: 管理后台 - 用户管理 */}
-          {activeTab === 'admin-users' && (
-            <div className="max-w-6xl mx-auto space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900">平台用户与权限控制</h2>
-                  <p className="text-xs text-slate-500">查看注册用户、剩余积分余额及角色权限</p>
-                </div>
-                <button
-                  onClick={() => triggerToast('支持直接对接 Supabase 用户池')}
-                  className="bg-slate-900 text-white text-xs font-semibold px-4 py-2 rounded-lg flex items-center gap-2 hover:bg-slate-800"
-                >
-                  <Plus className="h-4 w-4" />
-                  <span>添加测试用户</span>
-                </button>
-              </div>
-
-              <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
-                <table className="w-full text-left text-sm text-slate-600">
-                  <thead className="bg-slate-50 border-b border-slate-200 text-xs font-semibold text-slate-500 uppercase tracking-wider">
-                    <tr>
-                      <th className="px-6 py-3">用户昵称 / 手机号</th>
-                      <th className="px-6 py-3">角色权限</th>
-                      <th className="px-6 py-3">可用积分</th>
-                      <th className="px-6 py-3">生成次数</th>
-                      <th className="px-6 py-3">注册时间</th>
-                      <th className="px-6 py-3 text-right">操作</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100">
-                    {[
-                      { name: '灵凌体验官', phone: '138****8888', role: 'VIP创作者', credits: 120, tasks: 48, time: '2026-10-12' },
-                      { name: '小红书种草达人', phone: '139****9999', role: '普通会员', credits: 15, tasks: 12, time: '2026-10-25' },
-                      { name: '美妆测评李老师', phone: '186****1234', role: '企业学员', credits: 680, tasks: 310, time: '2026-10-29' }
-                    ].map((row, idx) => (
-                      <tr key={idx} className="hover:bg-slate-50/80 transition">
-                        <td className="px-6 py-4 font-medium text-slate-900">
-                          <div>{row.name}</div>
-                          <div className="text-xs text-slate-400 font-mono">{row.phone}</div>
-                        </td>
-                        <td className="px-6 py-4">
-                          <span className="bg-rose-50 text-rose-600 border border-rose-200 text-xs px-2.5 py-0.5 rounded-full font-medium">
-                            {row.role}
-                          </span>
-                        </td>
-                        <td className="px-6 py-4 font-semibold text-slate-800">{row.credits} 点</td>
-                        <td className="px-6 py-4 text-slate-500">{row.tasks} 次</td>
-                        <td className="px-6 py-4 text-xs text-slate-400">{row.time}</td>
-                        <td className="px-6 py-4 text-right">
-                          <button
-                            onClick={() => triggerToast(`已为 ${row.name} 手动赠送 50 积分`)}
-                            className="text-xs text-blue-600 hover:text-blue-800 font-medium"
-                          >
-                            加减积分
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-
-          {/* TAB 4: 管理后台 - AI 模型通道 */}
-          {activeTab === 'admin-models' && (
-            <div className="max-w-6xl mx-auto space-y-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-xl font-bold text-slate-900">AI 模型调度与通道中枢</h2>
-                  <p className="text-xs text-slate-500">配置文本模型、生图引擎、并发限制与故障自动切站</p>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {[
-                  { name: 'DeepSeek-V3 高速文案通道', type: '文字模型', provider: 'DeepSeek 官方', status: '正常运行', latency: '420ms', priority: '主线 #1' },
-                  { name: '通义千问 2.5 商业兜底', type: '文字模型', provider: '阿里云 DashScope', status: '备用待命', latency: '580ms', priority: '备用 #2' },
-                  { name: 'Flux-1 极致画质生图引擎', type: '图片模型', provider: 'Black Forest Labs', status: '正常运行', latency: '1850ms', priority: '主线 #1' },
-                ].map((m, i) => (
-                  <div key={i} className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm flex flex-col justify-between">
-                    <div>
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-mono">
-                          {m.type}
-                        </span>
-                        <span className="flex items-center gap-1.5 text-xs text-emerald-600 font-medium">
-                          <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                          {m.status}
-                        </span>
-                      </div>
-                      <h3 className="font-bold text-slate-900 text-base">{m.name}</h3>
-                      <p className="text-xs text-slate-500 mt-1">供应商: {m.provider}</p>
-                    </div>
-
-                    <div className="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
-                      <span>平均延迟: <strong className="text-slate-700">{m.latency}</strong></span>
-                      <span className="font-semibold text-rose-600">{m.priority}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* TAB 5: 其它页面占位 */}
-          {['cartoon', 'challenge', 'history', 'admin-orders', 'admin-templates'].includes(activeTab) && (
-            <div className="max-w-2xl mx-auto text-center py-20 space-y-4">
-              <div className="h-16 w-16 mx-auto rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center">
-                <Database className="h-8 w-8" />
-              </div>
-              <h2 className="text-xl font-bold text-slate-800">模块已就绪并绑定数据表</h2>
-              <p className="text-sm text-slate-500 max-w-md mx-auto">
-                该视图已在代码架构与 Supabase 数据表中完成规划，点击其他功能标签可随时切换。
-              </p>
-              <button
-                onClick={() => setActiveTab('marketplace')}
-                className="bg-slate-900 text-white text-xs font-semibold px-4 py-2 rounded-lg"
-              >
-                返回灵感广场
-              </button>
-            </div>
-          )}
-        </div>
-      </main>
-
-      {/* Recharge Modal */}
-      {showRechargeModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-sm p-4">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-8 shadow-2xl relative animate-scale-up">
-            <button
-              onClick={() => setShowRechargeModal(false)}
-              className="absolute top-6 right-6 text-slate-400 hover:text-slate-600"
-            >
-              ✕
-            </button>
-
-            <div className="text-center mb-6">
-              <div className="h-12 w-12 rounded-2xl bg-rose-50 text-rose-500 flex items-center justify-center mx-auto mb-3">
-                <Zap className="h-6 w-6 fill-rose-500" />
-              </div>
-              <h3 className="text-2xl font-bold text-slate-900">选择充值套餐</h3>
-              <p className="text-xs text-slate-500 mt-1">获取积分，解锁无限自媒体创作算力</p>
-            </div>
-
-            <div className="grid grid-cols-3 gap-3 mb-6">
-              {[
-                { name: '体验包', price: 9.9, credits: 100, tag: '新手必选' },
-                { name: '月度畅享', price: 49.0, credits: 600, tag: '超值热卖', highlight: true },
-                { name: '年度 Pro', price: 299.0, credits: 4500, tag: '企业首选' }
-              ].map((pkg, idx) => (
-                <div
-                  key={idx}
-                  onClick={() => handleRecharge(pkg.price, pkg.credits)}
-                  className={`border rounded-2xl p-4 text-center cursor-pointer transition hover:border-rose-500 hover:shadow-md ${
-                    pkg.highlight
-                      ? 'border-rose-500 bg-rose-50/40 ring-2 ring-rose-500/20'
-                      : 'border-slate-200'
-                  }`}
-                >
-                  <span className="text-[10px] bg-rose-500 text-white px-2 py-0.5 rounded-full font-medium">
-                    {pkg.tag}
-                  </span>
-                  <div className="text-2xl font-black text-slate-900 mt-2">
-                    ¥{pkg.price}
-                  </div>
-                  <div className="text-xs font-semibold text-rose-600 mt-1">
-                    {pkg.credits} 积分
-                  </div>
-                  <div className="text-[10px] text-slate-400 mt-1">{pkg.name}</div>
-                </div>
-              ))}
-            </div>
-
-            <div className="bg-slate-50 rounded-xl p-4 text-center">
-              <p className="text-xs text-slate-500 mb-2">点击套餐即刻模拟真实【微信 / 支付宝】支付并到账</p>
-              <div className="text-[11px] text-slate-400">支持接入原生商户微信扫码与支付宝 Webhook 自动到账</div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+    <div dangerouslySetInnerHTML={{ __html: RAW_HTML }} />
   )
 }
