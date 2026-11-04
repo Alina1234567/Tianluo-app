@@ -1,6 +1,6 @@
-# 灵凌同学 (Lingling AI) - 小红书自媒体创作全栈工作台
+# 田萝同学 (Tianluo AI) - 小红书自媒体创作全栈工作台
 
-这是一个专为小红书自媒体创作者量身打造的商业级全栈 AI SaaS 应用，基于 Next.js 14 + Tailwind CSS + Supabase (PostgreSQL) 构建，完整复刻了「灵凌同学」的全部前端视觉、动效交互以及后端数据闭环。
+这是一个专为小红书自媒体创作者量身打造的商业级全栈 AI SaaS 应用，基于 Next.js 14 + Tailwind CSS + Supabase (PostgreSQL) 构建，完整复刻了「田萝同学」的全部前端视觉、动效交互以及后端数据闭环。
 
 ---
 

@@ -12,7 +12,7 @@ import {
   ChevronRight
 } from 'lucide-react'
 
-export default function LinglingLanding() {
+export default function TianluoLanding() {
   return (
     <div className="min-h-screen bg-white text-slate-900 selection:bg-rose-500 selection:text-white">
       {/* Navigation */}
@@ -23,7 +23,7 @@ export default function LinglingLanding() {
               <Sparkles className="h-6 w-6" />
             </div>
             <div>
-              <span className="font-bold text-xl text-slate-950 tracking-tight">灵凌同学</span>
+              <span className="font-bold text-xl text-slate-950 tracking-tight">田萝同学</span>
               <span className="ml-2 text-xs text-rose-600 bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-full font-medium">小红书 AI</span>
             </div>
           </div>
@@ -62,7 +62,7 @@ export default function LinglingLanding() {
           </h1>
 
           <p className="max-w-2xl mx-auto text-lg text-slate-600 leading-relaxed">
-            告别选题卡壳与排版焦虑。灵凌同学为你提供从爆款标题提炼、高转化图文卡片排版、拟人卡通 IP 插画到小红书违禁词检测的全闭环工作台。
+            告别选题卡壳与排版焦虑。田萝同学为你提供从爆款标题提炼、高转化图文卡片排版、拟人卡通 IP 插画到小红书违禁词检测的全闭环工作台。
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
@@ -219,7 +219,7 @@ export default function LinglingLanding() {
 
       {/* Footer */}
       <footer className="py-12 border-t border-slate-200 bg-white text-center text-xs text-slate-400 space-y-3">
-        <p>© 2026 灵凌同学 Lingling AI. All Rights Reserved.</p>
+        <p>© 2026 田萝同学 Tianluo AI. All Rights Reserved.</p>
         <p>浙ICP备2026010294号-1 · 专注于小红书创作者的 AI 效能中枢</p>
       </footer>
     </div>

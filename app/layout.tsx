@@ -3,7 +3,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: '灵凌同学｜创作空间',
+  title: '田萝同学｜创作空间',
   description: '让自媒体变得无限简单 - 专为小红书创作者打造的一站式 AI 创作工作台。',
 }
 
